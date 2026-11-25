@@ -36,6 +36,7 @@ def api_get(self, urlPath, resourcePath, port):
             content = content.replace("{{ceklistNoCache}}", "checked" if SETTINGS["no_cache"] else "")
             content = content.replace("{{ceklistDirList}}", "checked" if SETTINGS["dir_listing"] else "")
             content = content.replace("{{ceklistAkses}}", "checked" if SETTINGS["serverAkses"] else "")
+            content = content.replace("{{ceklistAccessLog}}","checked" if SETTINGS["access_log"] else "")
             kirimRespon(self,content,"text/html; charset=utf-8")
 
         except OSError:
@@ -58,11 +59,11 @@ def api_post(self, urlPath):
             if not isinstance(data, dict):
                 raise ValueError("Data harus berupa JSON object")
 
-            if "no_cache" not in data or not isinstance(data["no_cache"], bool):
-                raise ValueError("Pengaturan no_cache tidak valid")
+            boolean_settings = ["no_cache", "dir_listing", "serverAkses", "access_log"]
+            if any(key not in data or not isinstance(data[key], bool) for key in boolean_settings):
+                raise ValueError("Pengaturan hanya menerima data boolean")
             
             port = data.get("port")
-
             if isinstance(port, bool) or not isinstance(port, int) or not 1 <= port <= 65535:
                 raise ValueError("Port tidak valid")
             
@@ -72,7 +73,8 @@ def api_post(self, urlPath):
                 "dir_listing": data["dir_listing"],
                 "CORS": data["CORS"],
                 "serverAkses" : data["serverAkses"],
-                "lang": data["lang"]
+                "lang": data["lang"],
+                "access_log": data["access_log"],
                 })
 
             kirimRespon(self, json.dumps({
