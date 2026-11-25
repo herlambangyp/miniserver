@@ -1,4 +1,4 @@
-from assets.script.textCLI import pesanCLI
+from assets.script.textCLI import pesanCLI, pesanCLIEN
 from assets.script.API import api_get, api_post
 from assets.script.respon import kirimRespon
 from assets.script.errorMassage import msgError
@@ -117,7 +117,10 @@ class DevHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             return
         
         self.send_error(404)
-
+    def log_message(self, format, *args):
+        if SETTINGS["access_log"]:
+            super().log_message(format, *args)
+            
     def end_headers(self):
         if SETTINGS["no_cache"]:
             self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
@@ -133,12 +136,19 @@ if __name__ == "__main__":
     url = f"http://localhost:{PORT}"
     
     with ReusableTCPServer(("0.0.0.0", PORT), DevHTTPRequestHandler) as httpd:
-        pesanCLI(DIRECTORY, PORT, url)
+        if SETTINGS["lang"] == "id":
+            pesanCLI(DIRECTORY, PORT, url)
+        else:
+            pesanCLIEN(DIRECTORY,PORT, url)
         webbrowser.open(url)
         
         try:
             httpd.serve_forever()
 
         except KeyboardInterrupt:
-            questionary.print("\n> Mematikan Server...", style="bold fg:ansired")
+            if SETTINGS["lang"] == "id":
+                questionary.print("\n> Mematikan Server...", style="bold fg:ansired")
+            else:
+                questionary.print("\n> Server Shutting Down...", style="bold fg:ansired")
+            
             httpd.server_close()

@@ -1,6 +1,7 @@
 altgraph==0.17.5
 packaging==26.3
 pefile==2024.8.26
+pillow==13.0.0
 prompt_toolkit==3.0.53
 pyinstaller==6.22.3
 pyinstaller-hooks-contrib==2026.10

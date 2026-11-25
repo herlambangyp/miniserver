@@ -10,12 +10,13 @@ CONFIG_FILE = os.path.join(CONFIG_DIR, "settings.json")
 
 # Konfigurasi default
 DEFAULT_SETTINGS = {
-    "lang" : "en",
+    "lang": "en",
     "port": 8000,
     "dir_listing": True,
     "serverAkses": False,
     "no_cache": True,
-    "CORS": "*"
+    "CORS": "*",
+    "access_log": True
 }
 
 # Konfigurasi yang sedang digunakan
